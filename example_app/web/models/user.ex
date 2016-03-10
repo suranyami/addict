@@ -2,16 +2,14 @@ defmodule ExampleApp.User do
   use ExampleApp.Web, :model
 
   schema "users" do
-    field :username, :string
     field :email, :string
-    field :hash, :string
-    field :recovery_hash, :string
-    field :timestamps, :string
+    field :encrypted_password, :string
+    field :name, :string
 
     timestamps
   end
 
-  @required_fields ~w(username email hash recovery_hash timestamps)
+  @required_fields ~w(email encrypted_password name)
   @optional_fields ~w()
 
   @doc """

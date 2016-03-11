@@ -12,26 +12,45 @@ defmodule Addict.Controller do
     end
   end
 
-  defp return_success(conn, user, custom_fn, status \\ 200) do
-    if custom_fn == nil, do: custom_fn = fn(a,b,c) -> {b, c} end
+  def login(conn, auth_params) do
+    result = with {:ok, user} <- Addict.Interactors.GetUserByEmail.call(auth_params["email"]),
+                  {:ok} <- Addict.Interactors.VerifyPassword.call(user, auth_params),
+                  {:ok, conn} <- Addict.Interactors.CreateSession.call(conn, user),
+             do: {:ok, conn, user}
 
-    {user, conn} = custom_fn.(:ok, user, conn)
+     case result do
+       {:ok, conn, user} -> return_success(conn, user, Addict.Configs.post_login)
+       {:error, errors} -> return_error(conn, errors, Addict.Configs.post_login)
+     end
+  end
+
+  def logout(conn, _) do
+     case Addict.Interactors.DestroySession.call(conn) do
+       {:ok, conn} -> return_success(conn, %{}, Addict.Configs.post_logout)
+       {:error, errors} -> return_error(conn, errors, Addict.Configs.post_logout)
+     end
+  end
+
+  defp return_success(conn, user, custom_fn, status \\ 200) do
+    if custom_fn == nil, do: custom_fn = fn(a,_,_) -> a end
+
     conn
     |> put_status(status)
-    |> json Addict.Presenter.strip_all(user)
+    |> custom_fn.(:ok, user)
+    |> json(Addict.Presenter.strip_all(user))
   end
 
   defp return_error(conn, errors, custom_fn) do
-    if custom_fn == nil, do: custom_fn = fn (a,b,c) -> {b, c} end
+    if custom_fn == nil, do: custom_fn = fn (a,_,_) -> a end
     IO.puts "errors:"
     IO.inspect errors
-    {errors, conn} = custom_fn.(:error, errors, conn) # influenciar comportamento de output?
     errors = errors |> Enum.map(fn {key, value} ->
       %{message: "#{Atom.to_string(key)} #{value}"}
     end)
     conn
+    |> custom_fn.(:error, errors)
     |> put_status(400)
-    |> json %{errors: errors}
+    |> json(%{errors: errors})
   end
 
 end

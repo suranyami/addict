@@ -9,6 +9,7 @@ defmodule Addict.Interactors.CreateSession do
     conn = conn
           |> fetch_session
           |> put_session(:current_user, Addict.Presenter.strip_all(user))
+          |> assign(:current_user, Addict.Presenter.strip_all(user))
     {:ok, conn}
   end
 end

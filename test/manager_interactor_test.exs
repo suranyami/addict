@@ -1,6 +1,6 @@
 defmodule Addict.ManagerInteractorTest do
   use ExUnit.Case, async: true
-  alias Addict.ManagerInteractor, as: Interactor
+  # alias Addict.ManagerInteractor, as: Interactor
 
 #   test "creates a user" do
 #     user_params = %{"email" => "test@example.com", "password" => "password", "username" => "test"}

@@ -1,5 +1,5 @@
 defmodule RegisterTest do
-  alias Addict.Interactors.ValidatePassword
+  # alias Addict.Interactors.ValidatePassword
   use ExUnit.Case, async: true
 
   test "it passes on happy path" do

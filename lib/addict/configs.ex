@@ -5,6 +5,8 @@ defmodule Addict.Configs do
     :fn_extra_validation,
     :pre_register,
     :post_register,
+    :post_login,
+    :post_logout,
     :extra_validation,
     :session_type,
     :repo

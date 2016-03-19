@@ -31,7 +31,6 @@ defmodule Addict.Mixfile do
      {:mailgun, "~> 0.1"},
      {:mock, "~> 0.1.3", only: :test},
      {:postgrex, ">= 0.0.0", only: :test},
-     {:ecto_fixtures, "~> 0.0.2", only: :test},
      {:earmark, "~> 0.2", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}]
   end

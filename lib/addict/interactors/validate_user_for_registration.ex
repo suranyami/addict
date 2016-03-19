@@ -27,9 +27,17 @@ defmodule Addict.Interactors.ValidateUserForRegistration do
   end
 
   defp validate_password(changeset, password, password_strategies) do
-    errors = %Addict.PasswordUser{}
+    %Addict.PasswordUser{}
     |> Ecto.Changeset.cast(%{password: password}, ~w(password), [])
     |> ValidatePassword.call(password_strategies)
-    |> Enum.concat(changeset.errors)
+    |> do_validate_password(changeset.errors)
+  end
+
+  defp do_validate_password({:ok, _}, existing_errors) do
+    existing_errors
+  end
+
+  defp do_validate_password({:error, messages}, existing_errors) do
+    Enum.concat messages, existing_errors
   end
 end

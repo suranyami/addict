@@ -11,6 +11,15 @@ defmodule Addict.Interactors.ValidatePassword do
     |> Enum.reduce(changeset, fn (strategy, acc) ->
       validate(strategy, acc)
     end)
+    |> format_response
+  end
+
+  defp format_response([]) do
+    {:ok, []}
+  end
+
+  defp format_response(messages) do
+    {:error, messages}
   end
 
   defp validate(:default, password) when is_bitstring(password) do

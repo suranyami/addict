@@ -20,7 +20,7 @@ defmodule Addict.Mixfile do
   end
 
   defp applications(_) do
-    [:phoenix, :ecto, :comeonin, :mailgun, :logger]
+    [:phoenix, :ecto, :comeonin, :mailgun, :logger, :crypto]
   end
 
   defp deps do
@@ -29,7 +29,9 @@ defmodule Addict.Mixfile do
      {:ecto, "~> 1.1"},
      {:comeonin, "~> 2.1" },
      {:mailgun, "~> 0.1"},
+     {:mock, "~> 0.1.3", only: :test},
      {:postgrex, ">= 0.0.0", only: :test},
+     {:ecto_fixtures, "~> 0.0.2", only: :test},
      {:earmark, "~> 0.2", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}]
   end

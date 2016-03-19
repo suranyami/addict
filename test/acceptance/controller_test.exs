@@ -46,6 +46,39 @@ defmodule ControllerTest do
 
   end
 
+  test "it resets a password" do
+    Application.put_env(:addict, :user_schema, TestAddictSchema)
+    Application.put_env(:addict, :repo, TestAddictRepo)
+    Application.put_env(:addict, :secret_key, "T01HLTEzMzctczNjcjM3NQ==")
+
+    register_params = %{
+      "email" => "john.doe@example.com",
+      "password" => "my passphrase"
+    }
+
+    {:ok, user} = Addict.Interactors.Register.call(register_params)
+    original_encrypted_password = user.encrypted_password
+
+    {:ok, reset_path} = Addict.Interactors.GeneratePasswordResetLink.call(user.id)
+
+    [token, signature] = reset_path |> String.split("?") |> Enum.at(1) |> String.split("&")
+    token = token |> String.split("=") |> Enum.at(1)
+    signature = signature |> String.split("=") |> Enum.at(1)
+
+    reset_params = %{
+      "token" => token,
+      "signature" => signature,
+      "password" => "new password"
+    }
+
+    conn(:post, "/reset_password", reset_params)
+    |> TestAddictRouter.call(@opts)
+
+    {:ok, user} = Addict.Interactors.GetUserByEmail.call(user.email)
+    assert original_encrypted_password != user.encrypted_password
+
+  end
+
   test "it logs out a user" do
     Application.put_env(:addict, :user_schema, TestAddictSchema)
     Application.put_env(:addict, :repo, TestAddictRepo)

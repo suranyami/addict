@@ -13,13 +13,13 @@ defmodule ValidatePasswordTest do
 
   test "it passes on happy path" do
     changeset = %Addict.PasswordUser{} |> Ecto.Changeset.cast(%{password: "one passphrase"}, ~w(password),[])
-    errors = ValidatePassword.call(changeset, [])
+    {:ok, errors} = ValidatePassword.call(changeset, [])
     assert errors == []
   end
 
   test "it validates the default use case" do
     changeset = %Addict.PasswordUser{} |> Ecto.Changeset.cast(%{password: "123"}, ~w(password),[])
-    errors = ValidatePassword.call(changeset, [])
+    {:error, errors} = ValidatePassword.call(changeset, [])
     assert errors == [password: "is too short"]
   end
 end

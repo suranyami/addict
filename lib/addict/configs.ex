@@ -15,7 +15,6 @@ defmodule Addict.Configs do
     :email_register_subject,
     :email_register_template,
     :reset_password_path,
-    :session_type,
     :repo
   ] |> Enum.each fn key ->
          def unquote(key)() do
